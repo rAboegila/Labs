@@ -1,0 +1,59 @@
+body {
+  background-color: rgb(240, 232, 227);
+}
+
+.product {
+  min-width: min-content;
+}
+.product img {
+  max-height: 25rem;
+  min-height: 25rem;
+}
+.product:hover {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+.prod-details h4,
+.prod-details h5 {
+  text-transform: capitalize;
+}
+.prod-details .price {
+  font-size: medium;
+  color: rgb(0, 0, 161);
+}
+
+.prod-details p {
+  text-align: justify !important;
+}
+
+.high {
+  color: green;
+}
+.med {
+  color: rgb(240, 134, 4);
+}
+.bg-med {
+  background-color: rgb(240, 134, 4);
+  color: white;
+}
+.bg-med:hover {
+  background-color: rgb(230, 128, 4);
+  color: white;
+}
+.bg-med:disabled {
+  background-color: rgb(240, 134, 4);
+  color: white;
+  opacity: 0.65;
+}
+.low {
+  color: rgb(238, 5, 5);
+}
+.none {
+  color: firebrick;
+}
+.quantity-modifier {
+  padding: 0.2rem 0.4rem;
+}
+.quantity-modifier i {
+  font-weight: 900;
+}

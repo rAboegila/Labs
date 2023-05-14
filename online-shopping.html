@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Lab One - Online Shop</title>
+
+    <!-- Links & Scripts -->
+
+    <!-- Vue CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <!-- Bootstrap 5.2 CDN CSS/JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"
+        defer></script>
+
+    <!-- Bootstrap Icons CDN  -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <!-- My Style Sheet Link  -->
+    <link rel="stylesheet" href="./style.css">
+
+    <!-- Dummy Data Link -->
+    <script src="./dummy-products.js"></script>
+
+
+</head>
+
+<body>
+    <div id="app" class="d-flex flex-column">
+        <!-- navbar -->
+
+
+        <nav class="navbar navbar-expand-lg bg-light ">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="./Vue.js_Logo.png" alt="Logo" width="30" height="24"
+                        class="d-inline-block align-text-top">
+                    Vue - Online Shop
+                </a>
+
+                <!-- <a class="navbar-brand" href="#">Vue - Online Shop</a> -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                    aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarText">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link " aria-current="page" href="#">Products</a>
+                        </li>
+
+                    </ul>
+                    <span class="nav-text px-3"> {{cartItems.length}}
+                        <span v-if="cartItems.length>1"> items </span>
+                        <span v-else> item </span>
+                        : {{totalPrice}} <i class="bi bi-currency-pound"></i> </span>
+                    <a class="  btn text-bg-primary px-2 navbar-item nav-link" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i
+                            class="navbar-item bi bi-cart-dash-fill me-2"></i>My
+                        Cart</a>
+
+
+
+                </div>
+            </div>
+        </nav>
+
+        <!-- end of navbar -->
+
+        <!-- products display -->
+
+
+        <div class="my-5 row m-auto  align-self-center justify-content-center">
+            <div class="product card shadow-sm rounded-2 border-0  px-0 pt-4 m-3 col-6 col-lg-4 col-xl-3"
+                :key="product.id" v-for="product in products">
+                <img class="prod-image px-4 card-img-top" :src="product.images[0]" :title="product.title"
+                    :alt="product.title + ` image`">
+
+                <div class="card-body px-4 ">
+                    <div class="prod-details mt-5 d-flex flex-column ">
+                        <div class=" d-flex  justify-content-between ">
+                            <h4 class="card-title">{{product.title}}</h4>
+                            <span>
+                                {{product.price}} <i class=" bi bi-currency-pound"></i></span>
+                        </div>
+                        <p class="card-text"> {{product.description}}</p>
+                    </div>
+                </div>
+                <div class="card-footer pt-3 ">
+                    <div class="px-4 d-flex justify-content-between align-items-baseline">
+                        <p v-if="product.stock>0" class="card-text d-inline fw-bold"> <span
+                                :class="product.stock > 50? 'high' : product.stock < 50 && product.stock > 5? 'med' : 'low'">
+                                <i class="bi bi-box-seam-fill"></i> In Stock :
+                            </span>
+                            <span> {{product.stock}}</span>
+                        </p>
+                        <p v-if="product.stock==0" class="card-text d-inline fw-bold"> <span class="none">
+                                <i class="bi bi-emoji-frown"></i> Out of Stock !
+                            </span>
+                        </p>
+                        <button href="#" class="btn btn-primary fw-bold" :disabled="product.stock==0"
+                            @click="addToCart(product)">Add To
+                            Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- end of products display -->
+
+
+        <!-- cart -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas-header">
+                <h5 class="fw-bold text-primary offcanvas-title" id="offcanvasRightLabel">My Cart</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column justify-content-between">
+                <div v-if="cartItems.length==0">
+                    <h4 class="text-danger"> No Items added</h4>
+                    <h6> Click on "Add to Cart" to add items </h6>
+                </div>
+                <div v-else class="d-flex flex-column">
+
+                    <div class="product card shadow-sm rounded-2 border-0   m-3 " :key="item.id"
+                        v-for="item in cartItems">
+
+                        <div class="card-body ">
+                            <div class="prod-details d-flex  justify-content-between">
+                                <h5 class="card-title  ">{{item.title}}</h5>
+                                <span class="ps-0">
+                                    {{item.price*item.quantity}} <i class="bi bi-currency-pound"></i></span>
+                            </div>
+                        </div>
+                        <div class="card-footer pt-3 ">
+                            <div class=" d-flex justify-content-between align-items-baseline">
+                                <p class="card-text d-inline fw-bold text-primary">
+                                    <i class="bi bi-stack"></i> Quantity:
+                                    <span>{{item.quantity}}</span>
+                                </p>
+                                <button href="#" class="quantity-modifier btn btn-success " :disabled="item.stock==0"
+                                    title="addItem" @click="addToCart(item)"><i class="bi bi-plus"></i></button>
+                                <button href="#" class="bg-med quantity-modifier btn  " title="removeItem"
+                                    :disabled="item.quantity==1" @click="decrementQuantity(item)"><i
+                                        class=" bi bi-dash"></i></button>
+                                <button href="#" class="quantity-modifier btn btn-danger " title="removeItem"
+                                    @click="removeItem(item)"> <i class="bi bi-trash3-fill"></i></button>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div v-if="cartItems.length>0" class="text-bg-primary p-2  rounded-2 align-self-end">
+                    <h5><i class="bi bi-tag-fill"></i> Total :
+                        {{totalPrice}} <i class="bi bi-currency-pound"></i> </h5>
+                </div>
+
+            </div>
+        </div>
+        <!-- end of cart -->
+
+        <!-- toast  -->
+
+        <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+            <div id="liveToast" class="toast text-bg-success " role="alert" aria-live="assertive" aria-atomic="true">
+
+                <div class="toast-body">
+                    {{message}}!
+                </div>
+            </div>
+        </div>
+        <!-- end of toast -->
+
+    </div>
+
+    <script>
+        const { createApp } = Vue
+
+        createApp({
+            data() {
+                return {
+                    products: products,
+                    cartItems: [],
+                    totalPrice: 0,
+                    message: "Toast Message"
+                }
+            },
+            methods: {
+                addToCart(product) {
+                    product.stock--;
+                    product.quantity = product.quantity ? product.quantity + 1 : 1;
+
+                    this.totalPrice += product.price;
+                    if (!this.cartItems.includes(product)) {
+                        this.cartItems.push(product)
+                        this.triggerToast('Item Added Successfully');
+                    }
+                    else {
+                        const i = this.cartItems.indexOf(product);
+                        this.cartItems.splice(i, 1, product);
+                        this.triggerToast('Item Quantity Updated Successfully');
+
+                    }
+                },
+
+                decrementQuantity(item) {
+                    item.quantity--;
+                    this.totalPrice -= item.price;
+
+                    this.products.find(prod => prod.id == item.id).stock++;
+                    this.triggerToast('Item Quantity Updated Successfully');
+
+
+
+                },
+                removeItem(item) {
+                    removedQuantity = item.quantity * item.price
+
+                    const i = this.cartItems.indexOf(item);
+                    this.cartItems.splice(i, 1);
+                    this.totalPrice -= removedQuantity;
+                    this.triggerToast('Item Removed Updated Successfully');
+
+                },
+                triggerToast(message) {
+                    this.message = message;
+                    const toastLiveExample = document.getElementById('liveToast')
+                    const toast = new bootstrap.Toast(toastLiveExample)
+                    toast.show()
+                }
+            },
+        }).mount('#app')
+    </script>
+</body>
+
+</html>
